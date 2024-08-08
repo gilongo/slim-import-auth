@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+    slim:
+        build: .
+        container_name: slim_app
+        environment:
+            docker: "true"
+        ports:
+            - "8080:80"
+        volumes:
+            - .:/var/www/
+        depends_on:
+            - db
+
+    db:
+        image: postgres:15
+        container_name: postgres_db
+        environment:
+            POSTGRES_DB: slim_app
+            POSTGRES_USER: slim_user
+            POSTGRES_PASSWORD: secret_password
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+volumes:
+    postgres_data:
