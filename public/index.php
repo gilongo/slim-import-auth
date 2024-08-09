@@ -38,6 +38,11 @@ $container->set(UserService::class, function (Container $container) {
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
+$app->get('/', function (Request $request, Response $response, $args) {
+    $response->getBody()->write('Hello world!');
+    return $response;
+});
+
 $app->post('/users', function (Request $request, Response $response, $args) use ($container) {
     $userService = $container->get(UserService::class);
     $newUser = $userService->signUp("test@palle.com");

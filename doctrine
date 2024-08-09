@@ -7,6 +7,6 @@ use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
 use Slim\Container;
 
 /** @var Container $container */
-$container = require_once __DIR__ . '/bootstrap.php';
+$container = require_once __DIR__ . '/config/bootstrap.php';
 
 ConsoleRunner::run(new SingleManagerProvider($container->get(EntityManager::class)));

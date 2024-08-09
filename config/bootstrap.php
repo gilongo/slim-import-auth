@@ -10,7 +10,7 @@ use UMA\DIC\Container;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$container = new Container(require __DIR__ . '/settings.php');
+$container = new Container(require __DIR__ . '/config/settings.php');
 
 $container->set(EntityManager::class, static function (Container $c): EntityManager {
     $settings = $c->get('settings');

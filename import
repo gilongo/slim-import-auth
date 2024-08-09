@@ -6,7 +6,7 @@ use Doctrine\DBAL\DriverManager;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$settings = require __DIR__ . '/settings.php';
+$settings = require __DIR__ . '/config/settings.php';
 $connection = DriverManager::getConnection($settings['settings']['doctrine']['connection']);
 $queryBuilder = $connection->createQueryBuilder();
 
