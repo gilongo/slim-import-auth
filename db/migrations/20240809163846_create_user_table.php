@@ -24,28 +24,9 @@ final class CreateUserTable extends AbstractMigration
             ->addColumn('lastName', 'string', ['limit' => 255])
             ->addColumn('email', 'string', ['limit' => 100])
             ->addColumn('username', 'string', ['limit' => 100])
-            ->addColumn('password', 'string', ['limit' => 40])
+            ->addColumn('password', 'string', ['limit' => 255])
             ->addColumn('birthday', 'date')
             ->addIndex(['username','email'], ['unique' => true])
             ->create();
-
-        $table->saveData([
-            [
-                'firstName' => 'Lorenzo',
-                'lastName' => 'D\'Ianni',
-                'email' => 'ld@qwentes.it',
-                'username' => 'lorenzod',
-                'password' => '$fV1v!-_er',
-                'birthday' => '1991-03-22'
-            ],
-            [
-                'firstName' => 'Matteo',
-                'lastName' => 'Barone',
-                'email' => 'ld@qwentes.it',
-                'username' => 'matteob',
-                'password' => 'P1pp0-Sal',
-                'birthday' => '1990-04-02'
-            ],
-        ]);
     }
 }

@@ -11,3 +11,8 @@ To run this application you'll need Docker installed on your machine.
 
 To start using this application, you have to run the `docker-compose up --build -d` command. This creates the enviroment where the backend application and the database is hosted. <br>
 The entrypoint is `localhost:8080`.
+
+## Application Cookbook
+
+- Run migrations: `docker exec slim_app vendor/bin/phinx migrate`
+- Run Users import script: `docker exec slim_app ./import users.csv`

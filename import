@@ -1,0 +1,112 @@
+#!/usr/bin/env php
+<?php
+
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
+
+require __DIR__ . '/vendor/autoload.php';
+
+$settings = require __DIR__ . '/settings.php';
+$connection = DriverManager::getConnection($settings['settings']['doctrine']['connection']);
+$queryBuilder = $connection->createQueryBuilder();
+
+// prompting output
+$file = trim($argv[1]);
+
+if(!file_exists($file)) {
+    echo "ERROR: File not found\n";
+    exit;
+}
+
+$fileExtension = pathinfo($file, PATHINFO_EXTENSION);
+if($fileExtension !== 'csv') {
+    echo "ERROR: File must be in csv format\n";
+    exit;    
+}
+
+echo "Importing from file: $file\n" ;
+
+$users = [];
+$row = 0;
+$headers = [];
+$discarded = [];
+
+if (($handle = fopen($file, "r")) !== FALSE) {
+    while (($data = fgetcsv($handle, NULL, ",")) !== FALSE) {
+        if($row === 0) {
+            $headers = $data;
+        } else {
+            if(count($data) === count($headers)) {
+                foreach($data as $key => $value) {
+
+                    // check if empty
+                    if(empty($value) && ($headers[$key] === 'password' || $headers[$key] === 'email' || $headers[$key] === 'username')) {
+                        $discarded[] = $data;
+                        unset($users[$row]);
+                        break;
+                    }
+
+                    // check password lenght
+                    if($headers[$key] === 'password' && strlen($value) < 4) {
+                        $discarded[] = $data;
+                        unset($users[$row]);
+                        break;
+                    }
+
+                    // check email format
+                    if($headers[$key] === 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                        $discarded[] = $data;
+                        unset($users[$row]);
+                        break;
+                    }
+
+                    // check date
+                    if($headers[$key] === 'birthday') {
+                        $date = explode('-', $value);
+                        if(!checkdate($date[1], $date[2], $date[0])) {
+                            $discarded[] = $data;
+                            unset($users[$row]);
+                            break;
+                        }
+                    }
+    
+                    $users[$row][$headers[$key]] = $value;
+                }   
+            } else {
+                $discarded[] = $data;
+            }
+        }
+        $row++;
+    }
+    fclose($handle);
+}
+
+
+// insert users
+$connection->beginTransaction();
+foreach($users as $user) {
+    try {
+        $connection->insert('users', [
+            '"firstName"' => $user['firstName'],
+            '"lastName"' => $user['lastName'],
+            'email' => $user['email'],
+            'username' => $user['username'],
+            'password' => password_hash($user['password'], PASSWORD_BCRYPT),
+            'birthday' => $user['birthday']
+        ]);
+    } catch(Exception $e) {
+        echo "ERROR: " . $e->getMessage() . "\n";
+        $connection->rollBack();
+        break;
+    }
+}
+
+
+if($connection->isTransactionActive()) {
+    $connection->commit();
+    echo "Done importing from file" . PHP_EOL;
+    echo "User imported: " . count($users) . PHP_EOL;
+    echo "User discarded: " . count($discarded) . PHP_EOL;
+} else {
+    echo "Import procedure not completed" . PHP_EOL;
+}
