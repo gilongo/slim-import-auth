@@ -15,4 +15,4 @@ The entrypoint is `localhost:8080`.
 ## Application Cookbook
 
 - Run migrations: `docker exec slim_app vendor/bin/phinx migrate`
-- Run Users import script: `docker exec slim_app ./import users.csv`
+- Run Users import script: `docker exec slim_app ./import data/users.csv`
