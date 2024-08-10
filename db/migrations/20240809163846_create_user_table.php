@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
+use Phinx\Util\Literal;
 
 final class CreateUserTable extends AbstractMigration
 {
@@ -19,9 +20,10 @@ final class CreateUserTable extends AbstractMigration
      */
     public function change(): void
     {
-        $table = $this->table('users');
-        $table->addColumn('firstName', 'string', ['limit' => 255])
-            ->addColumn('lastName', 'string', ['limit' => 255])
+        $table = $this->table('users', ['id' => false, 'primary_key' => ['id']]);
+        $table->addColumn('id', 'uuid', ['default' => Literal::from('uuid_generate_v4()'), 'null' => false])
+            ->addColumn('first_name', 'string', ['limit' => 255])
+            ->addColumn('last_name', 'string', ['limit' => 255])
             ->addColumn('email', 'string', ['limit' => 100])
             ->addColumn('username', 'string', ['limit' => 100])
             ->addColumn('password', 'string', ['limit' => 255])

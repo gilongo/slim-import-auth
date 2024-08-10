@@ -23,4 +23,17 @@ final class UserService
 
         return $newUser;
     }
+
+    public function getAll(): array
+    {
+        $users = $this->em->getRepository(User::class)->findAll();
+        if(!empty($users)) {
+            foreach($users as &$user) {
+                $user = $user->toArray();
+            }
+            return $users;
+        }
+
+        return [];
+    }
 }

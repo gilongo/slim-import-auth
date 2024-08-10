@@ -1,6 +1,6 @@
 <?php
 
-define('APP_ROOT', __DIR__ . '/../');
+define('APP_ROOT', __DIR__ );
 
 return [
     'settings' => [
@@ -25,12 +25,12 @@ return [
 
             // Path where Doctrine will cache the processed metadata
             // when 'dev_mode' is false.
-            'cache_dir' => APP_ROOT . '/var/doctrine',
+            'cache_dir' => APP_ROOT . '/../var/doctrine',
 
             // List of paths where Doctrine will search for metadata.
             // Metadata can be either YML/XML files or PHP classes annotated
             // with comments or PHP8 attributes.
-            'metadata_dirs' => [APP_ROOT . '/src/**/Domain'],
+            'metadata_dirs' => [APP_ROOT . '/../src/User/Domain'],
 
             // The parameters Doctrine needs to connect to your database.
             // These parameters depend on the driver (for instance the 'pdo_sqlite' driver
