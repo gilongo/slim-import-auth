@@ -11,6 +11,7 @@
     "doctrine/dbal": "^4.0",
     "symfony/cache": "^7.1",
     "uma/dic": "^4.0",
-    "robmorgan/phinx": "^0.16.2"
+    "robmorgan/phinx": "^0.16.2",
+    "symfony/uid": "^7.1"
   }
 }

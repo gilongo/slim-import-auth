@@ -6,13 +6,19 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\GeneratedValue;
+
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
+
 use DateTime;
+
 
 #[Entity, Table(name: 'users')]
 final class User
 {
-    #[Id, Column(type: 'string')]
-    private string $id;
+    #[Id, Column(type: 'string', unique: true)]
+    private string|null $id = null;
 
     #[Column(name: 'first_name', type: 'string')]
     private string $firstName;
@@ -30,10 +36,11 @@ final class User
     private string $password;
 
     #[Column(name: 'birthday', type: 'date')]
-    private DateTime $birthday;
+    private DateTime|null $birthday = null;
 
-    public function __construct(string $firstName, string $lastName, string $email, string $username, string $password, DateTime $birthday)
+    public function __construct(string $firstName, string $lastName, string $email, string $username, string $password, ?DateTime $birthday)
     {
+        $this->id = (Uuid::v4())->toString();
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->username = $username;
@@ -80,7 +87,7 @@ final class User
             'lastName' => $this->lastName,
             'username' => $this->username,
             'email' => $this->email,
-            'birthday' => $this->birthday->format('Y-m-d')
+            'birthday' => $this->birthday ? $this->birthday->format('Y-m-d') : null
         ];
     }
 }

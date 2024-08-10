@@ -4,6 +4,8 @@ namespace App\Services;
 
 use Doctrine\ORM\EntityManager;
 use App\User\Domain\User;
+use App\UserCreateRequest;
+use DateTime;
 
 final class UserService
 {
@@ -14,12 +16,23 @@ final class UserService
         $this->em = $em;
     }
 
-    public function signUp(string $email): User
+    public function signUp(UserCreateRequest $request): User
     {
-        $newUser = new User($email);
+        $newUser = new User(
+            $request->firstName,
+            $request->lastName,
+            $request->email,
+            $request->username,
+            password_hash($request->password, PASSWORD_BCRYPT),
+            DateTime::createFromFormat('Y-m-d', $request->birthday)
+        );
 
-        $this->em->persist($newUser);
-        $this->em->flush();
+        try {
+            $this->em->persist($newUser);
+            $this->em->flush();
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
 
         return $newUser;
     }

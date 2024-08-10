@@ -5,6 +5,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use UMA\DIC\Container;
 
+use App\UserCreateRequest;
+
 require __DIR__ . '/../vendor/autoload.php';
 
 // Set up the Container
@@ -32,9 +34,28 @@ $app->get('/users', function (Request $request, Response $response, $args) use (
 
 $app->post('/users', function (Request $request, Response $response, $args) use ($container) {
     $userService = $container->get('UserService');
-    $newUser = $userService->signUp("test@palleAAAAA.com");
-    $response->getBody()->write('User created: ' . $newUser->getEmail());
-    return $response;
+    $body = $request->getParsedBody();
+
+    $userCreationRequest = new UserCreateRequest(
+        $body['firstName'],
+        $body['lastName'],
+        $body['email'],
+        $body['username'],
+        $body['password'],
+        $body['birthday']
+    );
+
+    try {
+        $newUser = $userService->signUp($userCreationRequest);
+    } catch (\Exception $e) {
+        $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+    }
+
+    // return JWT
+    
+    $response->getBody()->write(json_encode(['user' => $newUser->toArray()]));
+    return $response->withHeader('Content-Type', 'application/json');
 });
 
 $app->run();
