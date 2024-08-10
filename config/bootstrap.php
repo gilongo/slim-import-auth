@@ -6,11 +6,12 @@ use Doctrine\ORM\ORMSetup;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use App\Services\UserService;
 use UMA\DIC\Container;
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-$container = new Container(require __DIR__ . '/config/settings.php');
+$container = new Container(require __DIR__ . '/../config/settings.php');
 
 $container->set(EntityManager::class, static function (Container $c): EntityManager {
     $settings = $c->get('settings');
@@ -31,7 +32,7 @@ $container->set(EntityManager::class, static function (Container $c): EntityMana
     return new EntityManager($connection, $config);
 });
 
-$container->set(UserService::class, static function (Container $c) {
+$container->set('UserService', static function (Container $c) {
     return new UserService($c->get(EntityManager::class));
 });
 

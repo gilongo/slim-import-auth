@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Doctrine\ORM\EntityManager;
-use App\Domain\User;
+use App\User\Domain\User;
 
 final class UserService
 {
