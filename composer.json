@@ -12,6 +12,9 @@
     "symfony/cache": "^7.1",
     "uma/dic": "^4.0",
     "robmorgan/phinx": "^0.16.2",
-    "symfony/uid": "^7.1"
+    "symfony/uid": "^7.1",
+    "tuupola/slim-jwt-auth": "^3.8",
+    "firebase/php-jwt": "^5.5",
+    "tuupola/base62": "^2.1"
   }
 }

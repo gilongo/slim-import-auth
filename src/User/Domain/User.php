@@ -74,6 +74,11 @@ final class User
         return $this->email;
     }
 
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
     public function getBirthday(): DateTime
     {
         return $this->birhtday;
