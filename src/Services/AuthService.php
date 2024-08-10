@@ -38,7 +38,7 @@ final class AuthService
             "sub" => $user->getId(),
         ];
 
-        $secret = "supersecretkeyyoushouldnotcommittogithub";
+        $secret = $_ENV['JWT_SECRET'];
         $token = JWT::encode($payload, $secret, "HS256");
 
         $data["token"] = $token;

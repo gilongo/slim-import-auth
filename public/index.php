@@ -9,6 +9,10 @@ use App\UserCreateRequest;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+//dotenv
+$dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
 // Set up the Container
 $container = require __DIR__ . '/../config/bootstrap.php';
 AppFactory::setContainer($container);
@@ -21,7 +25,7 @@ $app->addBodyParsingMiddleware();
 // Add Auth Middleware
 $app->add(new Tuupola\Middleware\JwtAuthentication([
     "headers" => ["Authorization"],
-    "secret" => "supersecretkeyyoushouldnotcommittogithub",
+    "secret" => $_ENV['JWT_SECRET'],
     "ignore" => ["/auth/login"],
     "error" => function ($response, $arguments) {
         $data = [
@@ -68,8 +72,6 @@ $app->post('/users', function (Request $request, Response $response, $args) use 
         return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
     }
 
-    // return JWT
-    
     $response->getBody()->write(json_encode(['user' => $newUser->toArray()]));
     return $response->withHeader('Content-Type', 'application/json');
 });
