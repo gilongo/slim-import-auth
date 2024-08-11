@@ -27,7 +27,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"username\": \"\",\r\n    \"password\": \"\"\r\n}",
+          "raw": "{\r\n    \"username\": \"matteob\",\r\n    \"password\": \"P1pp0-Sal\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -71,12 +71,8 @@
               "value": "Roncari"
             },
             {
-              "key": "startDate",
-              "value": "1990-01-01"
-            },
-            {
-              "key": "endDate",
-              "value": "1993-01-01"
+              "key": "birthday",
+              "value": "1990-01-01|1993-01-01"
             }
           ]
         }
