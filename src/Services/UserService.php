@@ -37,9 +37,47 @@ final class UserService
         return $newUser;
     }
 
-    public function getAll(): array
+    public function getAll($params = []): array
     {
-        $users = $this->em->getRepository(User::class)->findAll();
+        // TODO: implement validation
+
+        $filters = [
+            'firstName' => $params['firstName'] ?? null,
+            'lastName' => $params['lastName'] ?? null,
+            'startDate' => $params['startDate'] ?? null,
+            'endDate' => $params['endDate'] ?? null
+        ];
+
+        $query = $this->em->createQueryBuilder()
+        ->select('u')
+        ->from('\App\User\Domain\User', 'u');
+
+        if(!empty($filters['firstName'])) {
+            $query = $query
+            ->where('u.firstName = :firstName')
+            ->setParameter('firstName', $filters['firstName']);
+        }
+
+        if(!empty($filters['lastName'])) {
+            $query = $query
+            ->andWhere('u.lastName = :lastName')
+            ->setParameter('lastName', $filters['lastName']);
+        }
+
+        if(!empty($filters['startDate'])) {
+            $query = $query
+            ->andWhere('u.birthday >= :startDate')
+            ->setParameter('startDate', $filters['startDate']);
+        }
+
+        if(!empty($filters['endDate'])) {
+            $query = $query
+            ->andWhere('u.birthday <= :endDate')
+            ->setParameter('endDate', $filters['endDate']);
+        }
+
+        $users = $query->getQuery()->getResult();
+
         if(!empty($users)) {
             foreach($users as &$user) {
                 $user = $user->toArray();

@@ -45,7 +45,18 @@ $app->get('/', function (Request $request, Response $response, $args) {
 
 $app->get('/users', function (Request $request, Response $response, $args) use ($container) {
     $userService = $container->get('UserService');
-    $allUsers = $userService->getAll();
+
+    // params to array
+    $queryParamsStaging = $request->getUri()->getQuery();
+    $queryParams = [];
+    if (!empty($queryParamsStaging)) {
+        foreach (explode('&', $request->getUri()->getQuery()) as $value) {
+            $param = explode('=', $value);
+            $queryParams[$param[0]] = $param[1];
+        }
+    }
+
+    $allUsers = $userService->getAll($queryParams);
     $response
         ->getBody()
         ->write(json_encode($allUsers));
