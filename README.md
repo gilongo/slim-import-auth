@@ -10,7 +10,9 @@ To run this application you'll need Docker installed on your machine.
 ## Get Started
 
 To start using this application, you have to run the `docker-compose up --build -d` command. This creates the enviroment where the backend application and the database is hosted. <br>
-The entrypoint is `localhost:8080`.
+After that you'll have to install the composer dependencies, running `composer install`. <br>
+Automatically, the `post-dump-autoload` script will run migrations for users table and import the users running the `import` script. <br>
+Now the application should be up and running at `localhost:8080`.
 
 ## Application Cookbook
 

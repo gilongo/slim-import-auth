@@ -20,9 +20,6 @@ COPY . .
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/
 
-# Install application dependencies
-RUN composer install
-
 # Copy the virtual host configuration file
 COPY .docker/000-default.conf /etc/apache2/sites-available/000-default.conf
 

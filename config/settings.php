@@ -39,11 +39,11 @@ return [
             // of valid parameters: https://www.doctrine-project.org/projects/doctrine-dbal/en/current/reference/configuration.html
             'connection' => [
                 'driver' => 'pdo_pgsql',
-                'host' => $_ENV['DB_HOST'] ?? 'db',
-                'port' => $_ENV['DB_PORT'] ?? 5432,
-                'dbname' => $_ENV['DB_NAME'] ?? 'slim_app',
-                'user' => $_ENV['DB_USER'] ?? 'slim_user',
-                'password' => $_ENV['DB_PASSWORD'],
+                'host' => 'db',
+                'port' => 5432,
+                'dbname' => 'slim_app',
+                'user' => 'slim_user',
+                'password' => 'secret_password',
                 'charset' => 'utf-8'
             ]
         ]

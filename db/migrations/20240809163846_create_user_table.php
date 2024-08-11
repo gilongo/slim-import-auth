@@ -20,6 +20,8 @@ final class CreateUserTable extends AbstractMigration
      */
     public function change(): void
     {
+        $this->execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+
         $table = $this->table('users', ['id' => false, 'primary_key' => ['id']]);
         $table->addColumn('id', 'uuid', ['default' => Literal::from('uuid_generate_v4()'), 'null' => false])
             ->addColumn('first_name', 'string', ['limit' => 255])
