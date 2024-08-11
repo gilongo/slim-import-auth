@@ -39,8 +39,6 @@ final class UserService
 
     public function getAll($params = []): array
     {
-        // TODO: implement validation
-
         $filters = [
             'firstName' => $params['firstName'] ?? null,
             'lastName' => $params['lastName'] ?? null,

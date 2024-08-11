@@ -4,6 +4,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use UMA\DIC\Container;
+use Respect\Validation\Validator as v;
 
 use App\UserCreateRequest;
 
@@ -56,11 +57,46 @@ $app->get('/users', function (Request $request, Response $response, $args) use (
         }
     }
 
-    $allUsers = $userService->getAll($queryParams);
-    $response
-        ->getBody()
-        ->write(json_encode($allUsers));
-    return $response->withHeader('Content-Type', 'application/json');
+    try {
+        // validation
+        $dateValidator = v::date();
+        $stringValidator = v::stringType();
+
+        if (!empty($queryParams['firstName']) && !$stringValidator->validate($queryParams['firstName'])) {
+            throw new \Exception('Invalid first name', 400);
+        }
+
+        if (!empty($queryParams['lastName']) && !$stringValidator->validate($queryParams['lastName'])) {
+            throw new \Exception('Invalid last name', 400);
+        }
+
+        if (!empty($queryParams['birthday'])) {
+            $dates = explode('%7C', $queryParams['birthday']);
+
+            if (isset($dates[0])) $queryParams['startDate'] = $dates[0];
+            if (isset($dates[1])) $queryParams['endDate'] = $dates[1];
+
+            if (!empty($queryParams['startDate']) && !$dateValidator->validate($queryParams['startDate'])) {
+                throw new \Exception('Invalid start date', 400);
+            }
+
+            if (!empty($queryParams['endDate']) && !$dateValidator->validate($queryParams['endDate'])) {
+                throw new \Exception('Invalid end date', 400);
+            }
+
+            unset($queryParams['birthday']);
+        }
+
+        $allUsers = $userService->getAll($queryParams);
+        $response
+            ->getBody()
+            ->write(json_encode(['users' => $allUsers]));
+        return $response->withHeader('Content-Type', 'application/json');
+
+    } catch (\Exception $e) {
+        $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus($e->getCode());
+    }
 });
 
 $app->post('/users', function (Request $request, Response $response, $args) use ($container) {

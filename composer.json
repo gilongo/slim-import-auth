@@ -16,10 +16,11 @@
     "tuupola/slim-jwt-auth": "^3.8",
     "firebase/php-jwt": "^5.5",
     "tuupola/base62": "^2.1",
-    "vlucas/phpdotenv": "^5.6"
+    "vlucas/phpdotenv": "^5.6",
+    "respect/validation": "^2.3"
   },
   "scripts": {
-    "post-autoload-dump": [
+    "post-install-cmd": [
       "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
       "docker exec slim_app vendor/bin/phinx migrate",
       "sed -i 's/\r$//' import && docker exec slim_app ./import data/users.csv"
