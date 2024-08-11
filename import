@@ -23,12 +23,14 @@ if($fileExtension !== 'csv') {
     exit;    
 }
 
-echo "Importing from file: $file\n" ;
+echo "Importing from file: $file\n\n" ;
 
 $users = [];
 $row = 0;
 $headers = [];
 $discarded = 0;
+
+$password_exp = '/^(?=.*[a-z])(?=.*\d).{4,}$/';
 
 if (($handle = fopen($file, "r")) !== FALSE) {
     while (($data = fgetcsv($handle, NULL, ",")) !== FALSE) {
@@ -36,6 +38,14 @@ if (($handle = fopen($file, "r")) !== FALSE) {
             $headers = $data;
         } else {
             foreach($data as $key => $value) {
+                
+                if($headers[$key] === 'password' && !preg_match($password_exp, $value)) {
+                    echo "ERROR: Invalid password for user: " . $users[$row]['username'] . "\n";
+                    unset($users[$row]);
+                    $discarded++;
+                    break;
+                }
+
                 $users[$row][$headers[$key]] = $value;
             }   
         }
@@ -59,12 +69,12 @@ foreach($users as $user) {
         ]);
         $imported++;
     } catch(Exception $e) {
-        echo "ERROR: " . $e->getMessage() . "\n";
+        echo "ERROR: ". $user['username'] ." not imported, reason: " . $e->getMessage() . "\n";
         $discarded++;
     }
 }
 
 
-echo "Done importing from file" . PHP_EOL;
+echo "\n\nDone importing from file" . PHP_EOL;
 echo "User imported: " . strval($imported) . PHP_EOL;
 echo "User discarded: " . strval($discarded) . PHP_EOL;
